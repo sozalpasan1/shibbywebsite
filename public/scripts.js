@@ -1,53 +1,47 @@
-// Get the basketball element
-const basketball = document.getElementById('basketball');
-let velocityX = 0;
-let velocityY = 0;
-let positionX = window.innerWidth / 2;
-let positionY = window.innerHeight / 2;
-let moving = false;
-let intervalId;
+// Wait for the DOM to load before running the script
+window.onload = function() {
+    // Get the basketball element
+    const basketball = document.getElementById('basketball');
+    
+    // Set initial position in the center of the screen
+    let positionX = window.innerWidth / 2;
+    let positionY = window.innerHeight / 2;
 
-// Function to start the ball movement
-function moveBasketball() {
-    if (!moving) {
-        // Random initial velocity between -5 and 5
-        velocityX = (Math.random() * 10) - 5;
-        velocityY = (Math.random() * 10) - 5;
-        // Start moving the ball
-        intervalId = setInterval(updatePosition, 20);
-        moving = true;
-    }
-}
+    // Random initial velocity between -5 and 5 for X and Y
+    let velocityX = (Math.random() * 100) - 5;
+    let velocityY = (Math.random() * 100) - 5;
 
-// Function to update the basketball's position and handle bouncing
-function updatePosition() {
-    const ballWidth = basketball.offsetWidth;
-    const ballHeight = basketball.offsetHeight;
-    const maxX = window.innerWidth - ballWidth;
-    const maxY = window.innerHeight - ballHeight;
+    // Function to update the basketball's position and handle bouncing
+    function updatePosition() {
+        const ballWidth = basketball.offsetWidth;
+        const ballHeight = basketball.offsetHeight;
+        const maxX = window.innerWidth - ballWidth;
+        const maxY = window.innerHeight - ballHeight;
 
-    // Update position
-    positionX += velocityX;
-    positionY += velocityY;
+        // Update position by adding velocity
+        positionX += velocityX;
+        positionY += velocityY;
 
-    // Bounce off the walls by reversing velocity when hitting boundaries
-    if (positionX <= 0 || positionX >= maxX) {
-        velocityX = -velocityX;
-        positionX = Math.max(0, Math.min(positionX, maxX));
-    }
-    if (positionY <= 0 || positionY >= maxY) {
-        velocityY = -velocityY;
-        positionY = Math.max(0, Math.min(positionY, maxY));
+        // Check for collisions with the walls and reverse direction if needed
+        if (positionX <= 0 || positionX >= maxX) {
+            velocityX = -velocityX; // Reverse direction on X-axis
+            positionX = Math.max(0, Math.min(positionX, maxX)); // Ensure ball stays within bounds
+        }
+        if (positionY <= 0 || positionY >= maxY) {
+            velocityY = -velocityY; // Reverse direction on Y-axis
+            positionY = Math.max(0, Math.min(positionY, maxY)); // Ensure ball stays within bounds
+        }
+
+        // Apply the new position
+        basketball.style.left = `${positionX}px`;
+        basketball.style.top = `${positionY}px`;
     }
 
-    // Apply the new position
+    // Start moving the basketball by updating its position every 20ms
+    setInterval(updatePosition, 20);
+
+    // Initialize the basketball's position
     basketball.style.left = `${positionX}px`;
     basketball.style.top = `${positionY}px`;
-}
+};
 
-// Add click event to the basketball to start the movement
-basketball.addEventListener('click', moveBasketball);
-
-// Initialize the basketball's position
-basketball.style.left = `${positionX}px`;
-basketball.style.top = `${positionY}px`;

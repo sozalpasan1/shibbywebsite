@@ -40,16 +40,16 @@ h1 {
 .basketball {
     width: 100px;
     height: 100px;
-    background-image: url('basketball.png');
+    background-image: url('basketball.png'); /* Make sure you have a valid image */
     background-size: cover;
     border-radius: 50%;
-    position: fixed;
+    position: fixed; /* Ensure the ball moves within the viewport */
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     z-index: 9999;
-    cursor: pointer;
 }
+
 
 h3 {
     margin-bottom: 20px;
