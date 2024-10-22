@@ -9,30 +9,57 @@
 </head>
 <body>
     <header>
-        <h1>GOATS</h1>
+      <h1>CLICK ON THE GOATS</h1>
     </header>
-
-    <section class="rapper-section">
-        <div class="rapper">
-            <h2>Juice WRLD</h2>
-            <img src="juice_wrld.png" alt="Juice WRLD playing basketball" class="rapper-img">
-        </div>
-
-        <div class="rapper">
-            <h2>XXXTentacion</h2>
-            <img src="xxxtentacion.png" alt="XXXTentacion playing basketball" class="rapper-img">
-        </div>
-
-        <div class="rapper">
-            <h2>Pop Smoke</h2>
-            <img src="pop_smoke.png" alt="Pop Smoke playing basketball" class="rapper-img">
-        </div>
-    </section>
-
-    <div>
-        <div class="basketball" id="basketball"></div>
-    </div>
-    <script src="scripts.js"></script>
     
+    <section class="rapper-section">
+      <div class="rapper">
+        <h2>The Goat</h2>
+        <img src="ksi.png" alt="Juice WRLD playing basketball" class="rapper-img" id="ksi">
+      </div>
+    
+      <div class="rapper">
+        <h2>XXXTentacion</h2>
+        <img src="xxxtentacion.png" alt="XXXTentacion playing basketball" class="rapper-img" id="deez">
+      </div>
+    
+      <div class="rapper">
+        <h2>Pop Smoke</h2>
+        <img src="pop_smoke.png" alt="Pop Smoke playing basketball" class="rapper-img" id="sigma">
+      </div>
+    </section>
+    
+    <div>
+      <div class="basketball" id="basketball"></div>
+    </div>
+    
+    <audio id="popsmoke" src="popsmoke.mp3"></audio>
+    <audio id="tentacion" src="tentacion.mp3"></audio>
+    <audio id="king" src="king.mp3"></audio>
+    
+    <script>
+        document.getElementById('sigma').addEventListener('click', function() {
+            const audio = document.getElementById('popsmoke');
+            audio.play();
+        });
+    </script>
+    
+    <script>
+      document.getElementById('deez').addEventListener('click', function() {
+          const audio = document.getElementById('tentacion');
+          audio.play();
+      });
+    </script>
+
+    <script>
+      document.getElementById('ksi').addEventListener('click', function() {
+          const audio = document.getElementById('king');
+          audio.play();
+      });
+    </script>
+
+
+
+    <script src="scripts.js"></script>
 </body>
 </html>
