@@ -1,9 +1,83 @@
 // Wait for the DOM to load before running the script
-window.onload = function() {
+window.onload = function () {
+
+    // Variable to keep track of the currently playing audio
+    let currentAudio = null;
+
+    // Function to stop the current audio (if any) and play the new one
+    function playAudio(newAudio) {
+        if (currentAudio && currentAudio !== newAudio) {
+            currentAudio.pause();          // Pause the current audio
+            currentAudio.currentTime = 0;  // Reset its play time to 0
+        }
+        currentAudio = newAudio;           // Set the new audio as the current one
+        currentAudio.play();               // Play the new audio
+    }
+
+    // Add event listeners to the images to play corresponding audio
+    document.getElementById('sigma').addEventListener('click', function () {
+        const audio = document.getElementById('popsmoke');
+        playAudio(audio);
+    });
+
+    document.getElementById('deez').addEventListener('click', function () {
+        const audio = document.getElementById('tentacion');
+        playAudio(audio);
+    });
+
+    document.getElementById('ksi').addEventListener('click', function () {
+        const audio = document.getElementById('king');
+        playAudio(audio);
+    });
+
+
+
+    // Create a scene
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+    // Create a renderer and attach it to the body
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Add a rotating cube as an example
+    const geometry = new THREE.BoxGeometry();
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
+    const cube = new THREE.Mesh(geometry, material);
+
+    // Set the cube's position higher up on the screen
+    cube.position.y = 2;  // This moves the cube higher on the y-axis
+    scene.add(cube);
+
+    camera.position.z = 5;
+
+    // Animation function
+    function animate() {
+        requestAnimationFrame(animate);
+
+        // Rotate the cube for the animation effect
+        cube.rotation.x += 0.01;
+        cube.rotation.y += 0.01;
+
+        renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Make sure the 3D background scales with the window
+    window.addEventListener('resize', () => {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        renderer.setSize(width, height);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+    });
+
     // Get the basketball element
     //document.getElementById("my_audio").play();
     const basketball = document.getElementById('basketball');
-    
+
     // Set initial position in the center of the screen
     let positionX = window.innerWidth / 2;
     let positionY = window.innerHeight / 2;
@@ -39,7 +113,7 @@ window.onload = function() {
     }
 
     // Add mouse proximity detection
-    document.addEventListener('mousemove', function(event) {
+    document.addEventListener('mousemove', function (event) {
         const mouseX = event.clientX;
         const mouseY = event.clientY;
 
