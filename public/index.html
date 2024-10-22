@@ -6,68 +6,116 @@
     <title>Rappers Playing Basketball</title>
     <link rel="stylesheet" href="styles.css">
     
+    <!-- Include the Three.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
     <header>
-      <h1>CLICK ON THE GOATS</h1>
+        <h1>CLICK ON THE GOATS</h1>
     </header>
     
     <section class="rapper-section">
-      <div class="rapper">
-        <h2>The Goat</h2>
-        <img src="ksi.png" alt="Juice WRLD playing basketball" class="rapper-img" id="ksi">
-      </div>
+        <div class="rapper">
+            <h2>The Goat</h2>
+            <img src="ksi.png" alt="KSI playing basketball" class="rapper-img" id="ksi">
+        </div>
     
-      <div class="rapper">
-        <h2>XXXTentacion</h2>
-        <img src="xxxtentacion.png" alt="XXXTentacion playing basketball" class="rapper-img" id="deez">
-      </div>
+        <div class="rapper">
+            <h2>XXXTentacion</h2>
+            <img src="xxxtentacion.png" alt="XXXTentacion playing basketball" class="rapper-img" id="deez">
+        </div>
     
-      <div class="rapper">
-        <h2>Pop Smoke</h2>
-        <img src="pop_smoke.png" alt="Pop Smoke playing basketball" class="rapper-img" id="sigma">
-      </div>
+        <div class="rapper">
+            <h2>Pop Smoke</h2>
+            <img src="pop_smoke.png" alt="Pop Smoke playing basketball" class="rapper-img" id="sigma">
+        </div>
     </section>
     
     <div>
-      <div class="basketball" id="basketball"></div>
+        <div class="basketball" id="basketball"></div>
     </div>
     
+    <!-- Audio elements -->
     <audio id="popsmoke" src="popsmoke.mp3"></audio>
     <audio id="tentacion" src="tentacion.mp3"></audio>
     <audio id="king" src="king.mp3"></audio>
     
     <script>
-      // Variable to keep track of the currently playing audio
-      let currentAudio = null;
+        // Variable to keep track of the currently playing audio
+        let currentAudio = null;
 
-      // Function to stop the current audio (if any) and play the new one
-      function playAudio(newAudio) {
-          if (currentAudio && currentAudio !== newAudio) {
-              currentAudio.pause();          // Pause the current audio
-              currentAudio.currentTime = 0;  // Reset its play time to 0
-          }
-          currentAudio = newAudio;           // Set the new audio as the current one
-          currentAudio.play();               // Play the new audio
+        // Function to stop the current audio (if any) and play the new one
+        function playAudio(newAudio) {
+            if (currentAudio && currentAudio !== newAudio) {
+                currentAudio.pause();          // Pause the current audio
+                currentAudio.currentTime = 0;  // Reset its play time to 0
+            }
+            currentAudio = newAudio;           // Set the new audio as the current one
+            currentAudio.play();               // Play the new audio
+        }
+
+        // Add event listeners to the images to play corresponding audio
+        document.getElementById('sigma').addEventListener('click', function() {
+            const audio = document.getElementById('popsmoke');
+            playAudio(audio);
+        });
+
+        document.getElementById('deez').addEventListener('click', function() {
+            const audio = document.getElementById('tentacion');
+            playAudio(audio);
+        });
+
+        document.getElementById('ksi').addEventListener('click', function() {
+            const audio = document.getElementById('king');
+            playAudio(audio);
+        });
+    </script>
+
+    <!-- 3D Background using Three.js -->
+    <!-- Inside your existing Three.js setup script -->
+    <script>
+      // Create a scene
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+      // Create a renderer and attach it to the body
+      const renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      // Add a rotating cube as an example
+      const geometry = new THREE.BoxGeometry();
+      const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
+      const cube = new THREE.Mesh(geometry, material);
+
+  // Set the cube's position higher up on the screen
+      cube.position.y = 2;  // This moves the cube higher on the y-axis
+      scene.add(cube);
+
+      camera.position.z = 5;
+
+  // Animation function
+      function animate() {
+          requestAnimationFrame(animate);
+
+          // Rotate the cube for the animation effect
+          cube.rotation.x += 0.01;
+          cube.rotation.y += 0.01;
+
+          renderer.render(scene, camera);
       }
 
-      // Add event listeners to the images to play corresponding audio
-      document.getElementById('sigma').addEventListener('click', function() {
-          const audio = document.getElementById('popsmoke');
-          playAudio(audio);
-      });
+      animate();
 
-      document.getElementById('deez').addEventListener('click', function() {
-          const audio = document.getElementById('tentacion');
-          playAudio(audio);
+      // Make sure the 3D background scales with the window
+      window.addEventListener('resize', () => {
+          const width = window.innerWidth;
+          const height = window.innerHeight;
+          renderer.setSize(width, height);
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
       });
-
-      document.getElementById('ksi').addEventListener('click', function() {
-          const audio = document.getElementById('king');
-          playAudio(audio);
-      });
-  </script>
-
+    </script>
 
 
     <script src="scripts.js"></script>
