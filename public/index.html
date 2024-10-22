@@ -38,25 +38,35 @@
     <audio id="king" src="king.mp3"></audio>
     
     <script>
-        document.getElementById('sigma').addEventListener('click', function() {
-            const audio = document.getElementById('popsmoke');
-            audio.play();
-        });
-    </script>
-    
-    <script>
+      // Variable to keep track of the currently playing audio
+      let currentAudio = null;
+
+      // Function to stop the current audio (if any) and play the new one
+      function playAudio(newAudio) {
+          if (currentAudio && currentAudio !== newAudio) {
+              currentAudio.pause();          // Pause the current audio
+              currentAudio.currentTime = 0;  // Reset its play time to 0
+          }
+          currentAudio = newAudio;           // Set the new audio as the current one
+          currentAudio.play();               // Play the new audio
+      }
+
+      // Add event listeners to the images to play corresponding audio
+      document.getElementById('sigma').addEventListener('click', function() {
+          const audio = document.getElementById('popsmoke');
+          playAudio(audio);
+      });
+
       document.getElementById('deez').addEventListener('click', function() {
           const audio = document.getElementById('tentacion');
-          audio.play();
+          playAudio(audio);
       });
-    </script>
 
-    <script>
       document.getElementById('ksi').addEventListener('click', function() {
           const audio = document.getElementById('king');
-          audio.play();
+          playAudio(audio);
       });
-    </script>
+  </script>
 
 
 
