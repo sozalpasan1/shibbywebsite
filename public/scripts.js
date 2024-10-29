@@ -1,21 +1,32 @@
-//hi
+// Firebase configuration and initialization
+const firebaseConfig = {
+    apiKey: "AIzaSyDuweC9uS8GMLEs0M8q6c-Ssm2mcqSSd9Y",
+    authDomain: "shibbyprojectpleasework.firebaseapp.com",
+    projectId: "shibbyprojectpleasework",
+    storageBucket: "shibbyprojectpleasework.appspot.com",
+    messagingSenderId: "93344780820",
+    appId: "1:93344780820:web:3310c2309c0ecd4bff0d01",
+    measurementId: "G-2J69QSN0SK"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
 // Wait for the DOM to load before running the script
 window.onload = function () {
-
-    // Variable to keep track of the currently playing audio
+    // Previous audio functionality
     let currentAudio = null;
 
-    // Function to stop the current audio (if any) and play the new one
     function playAudio(newAudio) {
         if (currentAudio && currentAudio !== newAudio) {
-            currentAudio.pause();          // Pause the current audio
-            currentAudio.currentTime = 0;  // Reset its play time to 0
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
         }
-        currentAudio = newAudio;           // Set the new audio as the current one
-        currentAudio.play();               // Play the new audio
+        currentAudio = newAudio;
+        currentAudio.play();
     }
 
-    // Add event listeners to the images to play corresponding audio
     document.getElementById('sigma').addEventListener('click', function () {
         const audio = document.getElementById('popsmoke');
         playAudio(audio);
@@ -31,42 +42,95 @@ window.onload = function () {
         playAudio(audio);
     });
 
+    // Firebase Comments functionality
+    function createCommentElement(comment) {
+        const commentElement = document.createElement('div');
+        commentElement.className = 'comment';
+        commentElement.innerHTML = `
+            <div class="comment-text">${comment.text}</div>
+            <div class="comment-timestamp">${new Date(comment.timestamp).toLocaleString()}</div>
+        `;
+        return commentElement;
+    }
 
+    // Function to load comments for a rapper
+    function loadComments(rapperId) {
+        const commentsRef = database.ref(`comments/${rapperId}`);
+        const commentsContainer = document.getElementById(`${rapperId}-comments`);
 
-    // Create a scene
+        commentsRef.on('child_added', (snapshot) => {
+            const comment = snapshot.val();
+            const commentElement = createCommentElement(comment);
+            commentsContainer.appendChild(commentElement);
+            commentsContainer.scrollTop = commentsContainer.scrollHeight;
+        });
+    }
+
+    // Initialize comments for all rappers
+    ['ksi', 'xxx', 'popsmoke'].forEach(rapperId => {
+        loadComments(rapperId);
+    });
+
+    // Function to add a new comment
+    window.addComment = function(rapperId) {
+        const input = document.getElementById(`${rapperId}-comment-input`);
+        const commentText = input.value.trim();
+
+        if (commentText) {
+            const commentsRef = database.ref(`comments/${rapperId}`);
+            const newComment = {
+                text: commentText,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            };
+
+            commentsRef.push(newComment)
+                .then(() => {
+                    input.value = '';
+                })
+                .catch((error) => {
+                    console.error("Error posting comment:", error);
+                    alert("Error posting comment. Please try again.");
+                });
+        }
+    }
+
+    // Add enter key support for comment submission
+    const commentInputs = document.querySelectorAll('.comment-input');
+    commentInputs.forEach(input => {
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const rapperId = this.id.split('-')[0];
+                addComment(rapperId);
+            }
+        });
+    });
+
+    // Previous Three.js and basketball animation code remains the same
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-    // Create a renderer and attach it to the body
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    // Add a rotating cube as an example
     const geometry = new THREE.BoxGeometry();
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
     const cube = new THREE.Mesh(geometry, material);
-
-    // Set the cube's position higher up on the screen
-    cube.position.y = 2;  // This moves the cube higher on the y-axis
+    cube.position.y = 2;
     scene.add(cube);
 
     camera.position.z = 5;
 
-    // Animation function
     function animate() {
         requestAnimationFrame(animate);
-
-        // Rotate the cube for the animation effect
         cube.rotation.x += 0.01;
         cube.rotation.y += 0.01;
-
         renderer.render(scene, camera);
     }
 
     animate();
 
-    // Make sure the 3D background scales with the window
     window.addEventListener('resize', () => {
         const width = window.innerWidth;
         const height = window.innerHeight;
@@ -75,73 +139,52 @@ window.onload = function () {
         camera.updateProjectionMatrix();
     });
 
-    // Get the basketball element
-    //document.getElementById("my_audio").play();
     const basketball = document.getElementById('basketball');
-
-    // Set initial position in the center of the screen
     let positionX = window.innerWidth / 2;
     let positionY = window.innerHeight / 2;
-
-    // Slower random initial velocity between -2 and 2 for X and Y
     let velocityX = (Math.random() * 4 - 2);
     let velocityY = (Math.random() * 4 - 2);
 
-    // Function to update the basketball's position and handle bouncing
     function updatePosition() {
         const ballWidth = basketball.offsetWidth;
         const ballHeight = basketball.offsetHeight;
         const maxX = window.innerWidth - ballWidth;
         const maxY = window.innerHeight - ballHeight;
 
-        // Update position by adding velocity
         positionX += velocityX;
         positionY += velocityY;
 
-        // Check for collisions with the walls and reverse direction if needed
         if (positionX <= 0 || positionX >= maxX) {
-            velocityX = -velocityX; // Reverse direction on X-axis
-            positionX = Math.max(0, Math.min(positionX, maxX)); // Ensure ball stays within bounds
+            velocityX = -velocityX;
+            positionX = Math.max(0, Math.min(positionX, maxX));
         }
         if (positionY <= 0 || positionY >= maxY) {
-            velocityY = -velocityY; // Reverse direction on Y-axis
-            positionY = Math.max(0, Math.min(positionY, maxY)); // Ensure ball stays within bounds
+            velocityY = -velocityY;
+            positionY = Math.max(0, Math.min(positionY, maxY));
         }
 
-        // Apply the new position
         basketball.style.left = `${positionX}px`;
         basketball.style.top = `${positionY}px`;
     }
 
-    // Add mouse proximity detection
     document.addEventListener('mousemove', function (event) {
         const mouseX = event.clientX;
         const mouseY = event.clientY;
-
-        // Calculate the distance between the mouse and the basketball
         const ballCenterX = positionX + basketball.offsetWidth / 2;
         const ballCenterY = positionY + basketball.offsetHeight / 2;
         const distanceX = mouseX - ballCenterX;
         const distanceY = mouseY - ballCenterY;
         const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
 
-        // If the mouse is close to the ball (less than 100px), push the ball away
         if (distance < 100) {
-            // Calculate the direction to push the ball away
             const forceX = distanceX / distance;
             const forceY = distanceY / distance;
-
-            // Apply a force to the velocity to push the ball away
             velocityX += forceX * 0.5;
             velocityY += forceY * 0.5;
         }
     });
 
-    // Start moving the basketball by updating its position every 20ms
     setInterval(updatePosition, 20);
-
-    // Initialize the basketball's position
     basketball.style.left = `${positionX}px`;
     basketball.style.top = `${positionY}px`;
-
 };

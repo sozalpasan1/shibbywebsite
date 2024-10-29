@@ -6,35 +6,52 @@
     <title>Rappers Playing Basketbal.</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="shortcut icon" href="favicon.ico" />
-    
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <!-- Include the Three.js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
-    <header>
+    <div>
         <h1>CLICK ON THE GOATS</h1>
-    </header>
+    </div>
     
-    <section class="rapper-section">
+    <div class="rapper-section">
         <div class="rapper">
             <h2>The Goat</h2>
-            <img src="ksi.png" alt="KSI playing basketball" class="rapper-img" id="ksi">
+            <img src="ksi.png" id="ksi" class="rapper-img" alt="KSI playing basketball">
+            <div class="comments-section">
+                <h3>Comments</h3>
+                <div class="comments-container" id="ksi-comments"></div>
+                <textarea class="comment-input" id="ksi-comment-input" placeholder="Add a comment..."></textarea>
+                <button class="comment-button" onclick="addComment('ksi')">Post Comment</button>
+            </div>
         </div>
     
         <div class="rapper">
             <h2>XXXTentacion</h2>
-            <img src="xxxtentacion.png" alt="XXXTentacion playing basketball" class="rapper-img" id="deez">
+            <img src="xxxtentacion.png" id="deez" class="rapper-img" alt="XXXTentacion playing basketball">
+            <div class="comments-section">
+                <h3>Comments</h3>
+                <div class="comments-container" id="xxx-comments"></div>
+                <textarea class="comment-input" id="xxx-comment-input" placeholder="Add a comment..."></textarea>
+                <button class="comment-button" onclick="addComment('xxx')">Post Comment</button>
+            </div>
         </div>
     
         <div class="rapper">
             <h2>Pop Smoke</h2>
-            <img src="pop_smoke.png" alt="Pop Smoke playing basketball" class="rapper-img" id="sigma">
+            <img src="pop_smoke.png" id="sigma" class="rapper-img" alt="Pop Smoke playing basketball">
+            <div class="comments-section">
+                <h3>Comments</h3>
+                <div class="comments-container" id="popsmoke-comments"></div>
+                <textarea class="comment-input" id="popsmoke-comment-input" placeholder="Add a comment..."></textarea>
+                <button class="comment-button" onclick="addComment('popsmoke')">Post Comment</button>
+            </div>
         </div>
-    </section>
-    
-    <div>
-        <div class="basketball" id="basketball"></div>
     </div>
+    
+    <div id="basketball" class="basketball"></div>
     
     <!-- Audio elements -->
     <audio id="popsmoke" src="popsmoke.mp3"></audio>
