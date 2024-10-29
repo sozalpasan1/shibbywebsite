@@ -1,12 +1,12 @@
 // Firebase configuration and initialization
 const firebaseConfig = {
-    apiKey: "AIzaSyDuweC9uS8GMLEs0M8q6c-Ssm2mcqSSd9Y",
+    apiKey: "uh oh",
     authDomain: "shibbyprojectpleasework.firebaseapp.com",
     projectId: "shibbyprojectpleasework",
     storageBucket: "shibbyprojectpleasework.appspot.com",
-    messagingSenderId: "93344780820",
-    appId: "1:93344780820:web:3310c2309c0ecd4bff0d01",
-    measurementId: "G-2J69QSN0SK"
+    messagingSenderId: "uh oh",
+    appId: "uh oh",
+    measurementId: "uh oh"
 };
 
 // Initialize Firebase
