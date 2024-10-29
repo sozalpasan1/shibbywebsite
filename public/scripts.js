@@ -11,7 +11,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
+const db = firebase.firestore();
 
 // Wait for the DOM to load before running the script
 window.onload = function () {
@@ -42,28 +42,40 @@ window.onload = function () {
         playAudio(audio);
     });
 
-    // Firebase Comments functionality
+    // Firestore Comments functionality
     function createCommentElement(comment) {
         const commentElement = document.createElement('div');
         commentElement.className = 'comment';
         commentElement.innerHTML = `
             <div class="comment-text">${comment.text}</div>
-            <div class="comment-timestamp">${new Date(comment.timestamp).toLocaleString()}</div>
+            <div class="comment-timestamp">${comment.timestamp.toDate().toLocaleString()}</div>
         `;
         return commentElement;
     }
 
     // Function to load comments for a rapper
     function loadComments(rapperId) {
-        const commentsRef = database.ref(`comments/${rapperId}`);
         const commentsContainer = document.getElementById(`${rapperId}-comments`);
-
-        commentsRef.on('child_added', (snapshot) => {
-            const comment = snapshot.val();
-            const commentElement = createCommentElement(comment);
-            commentsContainer.appendChild(commentElement);
-            commentsContainer.scrollTop = commentsContainer.scrollHeight;
-        });
+        
+        // Clear existing comments
+        commentsContainer.innerHTML = '';
+        
+        // Listen for real-time updates
+        db.collection('rappers')
+            .doc(rapperId)
+            .collection('comments')
+            .orderBy('timestamp', 'desc')
+            .onSnapshot((snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === 'added') {
+                        const comment = change.doc.data();
+                        const commentElement = createCommentElement(comment);
+                        commentsContainer.insertBefore(commentElement, commentsContainer.firstChild);
+                    }
+                });
+            }, (error) => {
+                console.error("Error loading comments:", error);
+            });
     }
 
     // Initialize comments for all rappers
@@ -77,13 +89,13 @@ window.onload = function () {
         const commentText = input.value.trim();
 
         if (commentText) {
-            const commentsRef = database.ref(`comments/${rapperId}`);
-            const newComment = {
-                text: commentText,
-                timestamp: firebase.database.ServerValue.TIMESTAMP
-            };
-
-            commentsRef.push(newComment)
+            db.collection('rappers')
+                .doc(rapperId)
+                .collection('comments')
+                .add({
+                    text: commentText,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                })
                 .then(() => {
                     input.value = '';
                 })
