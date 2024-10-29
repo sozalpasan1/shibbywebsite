@@ -13,8 +13,48 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// Wait for the DOM to load before running the script
+// Cookie functions
+function setCookie(name, value, days) {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+}
+
+function getCookie(name) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+
+// Username handling
+let userName = getCookie('username');
+
+function showNameModal() {
+    document.getElementById('nameModal').style.display = 'block';
+}
+
+function submitName() {
+    const nameInput = document.getElementById('userNameInput');
+    const name = nameInput.value.trim();
+    if (name) {
+        userName = name;
+        setCookie('username', name, 365); // Store for 1 year
+        document.getElementById('nameModal').style.display = 'none';
+    }
+}
+
+// Check for username when page loads
 window.onload = function () {
+    // Show name modal if username isn't set
+    if (!userName) {
+        showNameModal();
+    }
+
     // Previous audio functionality
     let currentAudio = null;
 
@@ -27,6 +67,7 @@ window.onload = function () {
         currentAudio.play();
     }
 
+    // Your existing audio event listeners
     document.getElementById('sigma').addEventListener('click', function () {
         const audio = document.getElementById('popsmoke');
         playAudio(audio);
@@ -42,11 +83,12 @@ window.onload = function () {
         playAudio(audio);
     });
 
-    // Firestore Comments functionality
+    // Updated comment creation with username
     function createCommentElement(comment) {
         const commentElement = document.createElement('div');
         commentElement.className = 'comment';
         commentElement.innerHTML = `
+            <div class="comment-username">${comment.userName}</div>
             <div class="comment-text">${comment.text}</div>
             <div class="comment-timestamp">${comment.timestamp.toDate().toLocaleString()}</div>
         `;
@@ -83,8 +125,13 @@ window.onload = function () {
         loadComments(rapperId);
     });
 
-    // Function to add a new comment
+    // Updated function to add a new comment with username
     window.addComment = function(rapperId) {
+        if (!userName) {
+            showNameModal();
+            return;
+        }
+
         const input = document.getElementById(`${rapperId}-comment-input`);
         const commentText = input.value.trim();
 
@@ -94,6 +141,7 @@ window.onload = function () {
                 .collection('comments')
                 .add({
                     text: commentText,
+                    userName: userName,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 })
                 .then(() => {
